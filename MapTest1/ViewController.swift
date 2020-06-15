@@ -16,6 +16,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var locManager: CLLocationManager!
     var lonArray: [Double] = [0]
     var latArray: [Double] = [0]
+    var polyLineColorNumber = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,8 +62,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         //現在の座標データをcoordinate1に、一個前の座標データをcoordinate2にする
         if arrayNumber > 1 {
-            let coordinate1 = CLLocationCoordinate2D(latitude: lonArray[arrayNumber], longitude: latArray[arrayNumber])
-            let coordinate2 = CLLocationCoordinate2D(latitude: lonArray[arrayNumber - 1], longitude: latArray[arrayNumber - 1])
+            let coordinate1 = CLLocationCoordinate2D(latitude: latArray[arrayNumber], longitude: lonArray[arrayNumber])
+            let coordinate2 = CLLocationCoordinate2D(latitude: latArray[arrayNumber - 1], longitude: lonArray[arrayNumber - 1])
             //polylineを引くcoordinatesを設定する。
             let coordinates = [coordinate1, coordinate2]
             let PolyLine: MKPolyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
@@ -83,13 +84,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
             let polylineRenderer = MKPolylineRenderer(polyline: polyline)
-            polylineRenderer.strokeColor = .blue
-            polylineRenderer.lineWidth = 2.0
+            if polyLineColorNumber == 1 {
+                polylineRenderer.strokeColor = .blue
+            } else if polyLineColorNumber == -1 {
+                polylineRenderer.strokeColor = .red
+            }
+            polylineRenderer.lineWidth = 3.0
             return polylineRenderer
         }
         return MKOverlayRenderer()
     }
     
+    @IBAction func changeColor() {
+        polyLineColorNumber = polyLineColorNumber * -1
+    }
     
     //let coordinate1 = CLLocationCoordinate2D(latitude: , longitude: -122.050333)
     
